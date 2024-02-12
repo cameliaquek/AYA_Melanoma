@@ -1,5 +1,5 @@
 #######################################                
-#       pathway analysis
+#       KEGG pathway analysis
 #######################################
 #load library
 library(enrichplot)
@@ -9,7 +9,7 @@ library(org.Hs.eg.db)
 library(DOSE)
 library(ggplot2)
 
-setwd("/Users/xinyubai/Documents/01_Research projects/AYA_immunotherapy/02analysis/01NR_G1G2_analysis/DE_pathway_analysis")
+setwd("~/DE_pathway_analysis")
 
 dat <- read.table("filtered_DEgenes_aya_G2vsG1.txt", header = T)
 dat <- read.table("filtered_DE_AYA_CRvsPD.txt", header = T)
@@ -78,9 +78,11 @@ head(m_t2g)
 #3 KEGG_ABC_TRANSPORTERS       26154
 
 
-#Plot dotplot
-#Set min and max gene size to be the same as GSEA analysis
-em2 <- GSEA(geneListID, minGSSize = 3, maxGSSize = 500 ,pvalueCutoff = 0.05, TERM2GENE = m_t2g)
+
+#######################################                
+#       KEGG pathway visualisation
+#######################################
+
 em2 <- GSEA(geneListID, minGSSize = 10, maxGSSize = 500 ,pvalueCutoff = 0.05, TERM2GENE = m_t2g) #for G1vsG2
 em2 <- GSEA(geneListID, minGSSize = 10, maxGSSize = 400 ,pAdjustMethod = "none", pvalueCutoff = 0.05, TERM2GENE = m_t2g) #for CR vs PD
 results <- setReadable(em2, OrgDb = "org.Hs.eg.db", keyType="ENTREZID")
@@ -91,18 +93,9 @@ write.table(results,
 png("KEGG_msigdb_top-new.png",units="in", width = 6, height = 4, res = 300)
 dotplot(em2, showCategory = 50, title = "GSEA Group1 vs Group2" , split=".sign", font.size=9) + facet_grid(.~.sign)
 dev.off()
-#dotplot(em2, showCategory = 50, title = "Enriched Pathways using MSigDB" , split=".sign") + facet_grid(.~.sign)
 
 
-png("ayaG2vsG1_KEGG_networktry3.png", units="cm", width = 25, height = 20, res =500)
-edox <- setReadable(em2, OrgDb = "org.Hs.eg.db", keyType="ENTREZID")
-cnetplot(edox, node_label="category", 
-         cex_label_category = 1.2,color_category='firebrick',
-         categorySize="p.adjust", foldChange=geneListID) +
-  scale_color_gradient2(name='log2FC', low="#02284f", mid = "lightblue", high = "white")
-dev.off()
-
-png("ayaG2vsG1_KEGG_networktry3.png", units="cm", width = 25, height = 20, res =500)
+png("ayaG2vsG1_KEGG_network.png", units="cm", width = 25, height = 20, res =500)
 edox <- setReadable(em2, OrgDb = "org.Hs.eg.db", keyType="ENTREZID")
 cnetplot(edox, node_label="gene", 
          cex_label_gene = 1.2,color_category='firebrick',
@@ -110,10 +103,11 @@ cnetplot(edox, node_label="gene",
   scale_color_gradient2(name='log2FC', low="#02284f", mid = "lightblue", high = "white")
 dev.off()
 
+
 png("ayaG1vsG2_KEGG_circle.png", units="cm", width = 30, height = 30, res =500, pointsize = 3)
 cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
 dev.off
-while (!is.null(dev.list()))  dev.off()
+
 
 #heatmaps
 p1 <- heatplot(edox, showCategory=5)
@@ -123,8 +117,9 @@ p2 <- heatplot(edox, foldChange=geneList, showCategory=5)
 png("ayaG2vsG1_KEGG_heatplot.png", units="cm", width = 50, height = 10, res = 500)
 heatplot(edox, showCategory=5)
 dev.off
-while (!is.null(dev.list()))  dev.off()
 
+
+# Save KEGG results
 kegg <- enrichKEGG(gene = gene,
                universe = names(geneListID),
                organism = "hsa",
@@ -136,7 +131,11 @@ kegg <- enrichKEGG(gene = gene,
 enrich.kegg.res <- setReadable(kegg, OrgDb = org.Hs.eg.db)
 
 
-#### GO over-representation analysis
+
+#######################################                
+#    GO over-representation analysis
+#######################################
+
 gene <- names(geneListID)[abs(geneListID) > 2]
 length(gene)
 
