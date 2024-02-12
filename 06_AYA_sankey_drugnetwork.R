@@ -1,5 +1,23 @@
 #######################################
-# Sankey and drug groups
+# Download drug bank data
+#######################################
+
+devtools::install_github("interstellar-Consultation-Services/dbdataset")
+library(dbdataset)
+data(package = "dbdataset")
+##is.data.frame(Groups_Drug)
+##[1] TRUE
+head(Groups_Drug,6)
+head(Classifications_Drug,6)
+write.table(Groups_Drug, "Groups_Drug.txt", sep = "\t", col.names = TRUE, row.names = FALSE)
+write.table(Drugs, "Drugs_summary.txt", sep = "\t", col.names = TRUE, row.names = FALSE)
+
+
+#drugs are filtered for "approved", "antineoplastic", "immunotherapies" categories, and targets that match with the AYA expression profiles are used 
+
+
+#######################################
+# Sankey diagram
 #######################################
 
 # Load library
@@ -41,4 +59,3 @@ p <- sankeyNetwork(Links = links, Nodes = nodes, height=800,width=800,iterations
 pdf(file = "treatment-switch_sankey.pdf")
 p 
 dev.off()
-
