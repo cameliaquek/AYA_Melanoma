@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use codes from this repository, please cite it as below."
+authors:
+  - family-names: Bai
+    given-names: Xinyu
+  - family-names: Quek
+    given-names: Camelia
+title: "Stroma-infiltrating T cell spatiotypes define immunotherapy outcomes in adolescent and young adult patients with melanoma"
+version: 1.0.0
+date-released: 2024-02-20
+doi: "10.5281/zenodo.10681885"
